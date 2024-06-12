@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <title>Java后端WebSocket的Tomcat测试</title>
+        <script type="text/javascript" src="res_js/jquery-3.7.0.min.js"></script>
+        <script type="text/javascript" src="res_js/message-plus.js"></script>
+        <script type="text/javascript" src="res_js/vue.global.js"></script>
+        <style>
+            .addNew {
+                width: 455px;
+                height: 323px;
+                border: 1px black solid;
+                margin: 0;
+                float: left;
+                line-height: 300px;
+                text-align: center;
+                user-select: none;
+            }
+            .addNew:hover {
+                background-color: rgba(180,180,180,1);
+            }
+            .addNew:active {
+                background-color: rgba(130,130,130,1);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div :id="getId(id)" v-for="id in ids">
+                <div v-if="showIds[id-1]" style="width: 457px; float: left; margin-right: 5px; margin-bottom: 5px">
+                    <div style="width: 100%">
+                        <font>第{{id}}号</font>
+                        <button @click="deleteById(id)" style="float: right">删除</button>
+                    </div>
+                    <iframe src="websocket.html" style="width: 457px; height: 302px; border: 0;"></iframe>
+                </div>
+            </div>
+            <div class="addNew" @click="addNew">
+                添加新连接
+            </div>
+        </div>
+        <script>
+            const App = {
+                mounted() {
+                },
+                methods: {
+                    // 添加新框
+                    addNew() {
+                        this.showIds.push(true);
+                        this.ids.push(this.nowId);
+                        this.nowId++;
+                    },
+                    // 删除对应ID框
+                    deleteById(id) {
+                        this.showIds[id-1]=false;
+                    },
+                    // 获取ID
+                    getId(id) {
+                        return id;
+                    }
+                },
+                data() {
+                    return {
+                        ids: [1],
+                        showIds: [true],
+                        nowId: 2,
+                    };
+                }
+            };
+            const app = Vue.createApp(App);
+            app.mount("#app");
+        </script>
+    </body>
+</html>
