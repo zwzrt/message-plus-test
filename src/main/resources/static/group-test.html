@@ -92,7 +92,7 @@
             message.groupId = document.getElementById('groupId').value;
             message.msg = msgContent;
             // websocket.send('{"msg":"' + msgContent + '"}');
-            websocket.send(JSON.stringify(NewMassShotMessage(message)));
+            websocket.send(JSON.stringify(NewMassShotMessage(message.groupId, message)));
             setMessageInnerHTML(msgContent + "&#13;");
         }
     </script>

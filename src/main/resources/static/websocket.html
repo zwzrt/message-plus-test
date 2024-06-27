@@ -90,7 +90,7 @@
             message.friendId = document.getElementById('friendId').value;
             message.msg = msgContent;
             // websocket.send('{"msg":"' + msgContent + '"}');
-            websocket.send(JSON.stringify(NewSingleShotMessage(message)));
+            websocket.send(JSON.stringify(NewSingleShotMessage(message.friendId, message)));
             setMessageInnerHTML(msgContent + "&#13;");
         }
     </script>
