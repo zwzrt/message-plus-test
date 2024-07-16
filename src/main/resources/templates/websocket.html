@@ -8,16 +8,18 @@
     </head>
     <body style="width: 455px; height: 300px; border: 1px black solid; margin: 0">
         <div style="width: 455px">
-            输入ID：<input id="my_id" type="text" style="width: 162px; height: 15px">
+            输入ID：<input id="my_id" type="text" style="width: 162px; height: 15px"><br>
+            端口：<input id="port" type="text" value="8081">
             <button id="joinBtn" onclick="join()">立即连接</button>
             <button onclick="closeWebSocket()">关闭WebSocket连接</button>
         </div>
         <hr>
         <div>
             发送方：<input id="friendId" type="text" style="width: 162px; height: 15px">
+            发送次数：<input id="sendFrequency" type="number" name="quantity" min="1" max="100" value="1">
         </div>
         <div>
-            发送次数：<input id="sendFrequency" type="number" name="quantity" min="1" max="100">
+            是否清空内容：<input id="clearContent" type="checkbox" checked>
             内容：<input id="msgContent" type="text" style="width: 162px; height: 15px">
             <button onclick="send()">发送消息</button>
         </div>
@@ -26,20 +28,26 @@
     </body>
     <script type="text/javascript">
         const wsUrl = "ws://localhost:8081/api/websocket/";
+        function getWsUrl(port) {
+            return "ws://localhost:"+port+"/api/websocket/"
+        }
         // 我的ID
         var MY_ID = undefined;
+        // 服务器端口
+        var PORT = undefined;
         // 套接字
         var websocket = null;
         // 连接服务器
         function join() {
             MY_ID = document.getElementById('my_id').value;
             if (MY_ID===undefined) return;
+            PORT = document.getElementById('port').value;
             document.getElementById('joinBtn').disabled = true;
             document.getElementById('message').innerHTML = '';
             //判断当前浏览器是否支持WebSocket
             if('WebSocket' in window) {
                 //改成你的地址
-                websocket = new WebSocket(wsUrl+MY_ID);
+                websocket = new WebSocket(getWsUrl(PORT)+MY_ID);
             } else {
                 alert('当前浏览器 Not support websocket')
             }
@@ -56,7 +64,7 @@
 
             //接收到消息的回调方法
             websocket.onmessage = function(event) {
-                console.log(event);
+                // console.log(event);
                 setMessageInnerHTML(event.data);
             }
 
@@ -85,9 +93,13 @@
 
         //发送消息
         function send() {
+            // 获取消息内容
             var msgContent = document.getElementById('msgContent').value;
             if (msgContent==='') return;
-            document.getElementById('msgContent').value = '';
+            // 是否清空输入框
+            var isClearContent = document.getElementById('clearContent').checked;
+            if (isClearContent) document.getElementById('msgContent').value = '';
+
             var message = {};
             message.friendId = document.getElementById('friendId').value;
             message.msg = msgContent;
@@ -98,10 +110,10 @@
             var startTime = Date.now();
             for (let i = 0; i < sendFrequency; i++) {
                 websocket.send(JSON.stringify(NewSingleShotMessage(message.friendId, message)));
-                setMessageInnerHTML(msgContent + "&#13;");
+                // setMessageInnerHTML(msgContent + "&#13;");
             }
             var endTime = Date.now();
-            alert(endTime)
+            console.log("发送消息总时长：", endTime - startTime);
         }
     </script>
 </html>

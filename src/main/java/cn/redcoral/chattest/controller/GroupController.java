@@ -1,7 +1,6 @@
 package cn.redcoral.chattest.controller;
 
-import cn.redcoral.messageplus.utils.ChatUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import cn.redcoral.messageplus.utils.MessagePlusUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +20,7 @@ public class GroupController {
 
     @PostMapping()
     public String createGroup(String createUserId, String name, @RequestBody List<String> clientIds) {
-        return ChatUtils.createGroup(createUserId, name, clientIds).getId();
+        return MessagePlusUtils.createGroup(createUserId, name, clientIds).getId();
     }
 
 }

@@ -3,7 +3,7 @@ package cn.redcoral.chattest;
 import cn.redcoral.chattest.entity.FriendMsg;
 import cn.redcoral.chattest.entity.GroupMsg;
 import cn.redcoral.messageplus.port.MessagePlusBase;
-import cn.redcoral.messageplus.utils.ChatUtils;
+import cn.redcoral.messageplus.utils.MessagePlusUtils;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,6 @@ import java.util.List;
  * @Description:
  * @日期: 2024-05-25 14:21
  **/
-@Component
 @Slf4j
 @Service
 @ServerEndpoint("/api/websocket/{sid}")
@@ -58,17 +57,17 @@ public class MessageUtil extends MessagePlusBase {
 
     @Override
     public boolean onMessageBySingle(Object message, Session session) {
-        System.out.println("单发");
+//        System.out.println("单发");
         FriendMsg friendMsg = JSON.parseObject(message.toString(), FriendMsg.class);
-        return ChatUtils.sendMessage(friendMsg.getFriendId(), friendMsg.getMsg());
+        return MessagePlusUtils.sendMessage(friendMsg.getFriendId(), friendMsg.getMsg());
     }
 
     @Override
     public List<String> onMessageByMass(Object message, Session session) {
-        System.out.println("群发");
+//        System.out.println("群发");
         GroupMsg groupMsg = JSON.parseObject(message.toString(), GroupMsg.class);
         // 群发
-        return ChatUtils.sendMessageToGroupBarringMe(this.client_id, groupMsg.getGroupId(), groupMsg.getMsg());
+        return MessagePlusUtils.sendMessageToGroupBarringMe(this.client_id, groupMsg.getGroupId(), groupMsg.getMsg());
     }
 
     @Override
@@ -82,7 +81,7 @@ public class MessageUtil extends MessagePlusBase {
     @Override
     public void onMessageByInboxAndSingle(Object message, Session session) {
         FriendMsg friendMsg = JSON.parseObject(message.toString(), FriendMsg.class);
-        ChatUtils.sendMessage(client_id, friendMsg.getMsg());
+        MessagePlusUtils.sendMessage(client_id, friendMsg.getMsg());
     }
     /**
      * 收到收件箱的群发消息
@@ -90,7 +89,7 @@ public class MessageUtil extends MessagePlusBase {
     @Override
     public void onMessageByInboxAndByMass(Object message, Session session) {
         GroupMsg groupMsg = JSON.parseObject(message.toString(), GroupMsg.class);
-        ChatUtils.sendMessage(client_id, groupMsg.getMsg());
+        MessagePlusUtils.sendMessage(client_id, groupMsg.getMsg());
     }
     /**
      * 收到收件箱的系统消息

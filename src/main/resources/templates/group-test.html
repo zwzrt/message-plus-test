@@ -2,30 +2,32 @@
 <html lang="zh-CN">
     <head>
         <meta charset="utf-8">
-        <title>Java后端WebSocket的Tomcat测试</title>
+        <title>Java后端WebSocket的群聊测试</title>
         <script type="text/javascript" src="res_js/jquery-3.7.0.min.js"></script>
         <script type="text/javascript" src="res_js/message-plus.js"></script>
     </head>
-    <body style="width: 455px; height: 300px; border: 1px black solid; margin: 0">
-        <div style="width: 455px">
-            输入ID：<input id="my_id" type="text" style="width: 162px; height: 15px">
+    <body>
+        <div><a href="/">&lt;&lt;返回</a></div>
+        <hr>
+        <div>
+            输入ID：<input id="my_id" type="text">
             <button id="joinBtn" onclick="join()">立即连接</button>
             <button onclick="closeWebSocket()">关闭WebSocket连接</button>
         </div>
         <hr>
         <div>
-            发送方：<input id="friendId" type="text" style="width: 162px; height: 15px">
+            群组ID：<input id="groupId" type="text">
+            发送次数：<input id="sendFrequency" type="number" name="quantity" min="1" max="100" value="1">
         </div>
         <div>
-            发送次数：<input id="sendFrequency" type="number" name="quantity" min="1" max="100">
-            内容：<input id="msgContent" type="text" style="width: 162px; height: 15px">
+            是否清空内容：<input id="clearContent" type="checkbox" checked>
+            内容：<input id="msgContent" type="text">
             <button onclick="send()">发送消息</button>
         </div>
         <hr>
-        <div id="message" style="height: 190px; overflow: auto"></div>
+        <div id="message"></div>
     </body>
     <script type="text/javascript">
-        const wsUrl = "ws://localhost:8081/api/websocket/";
         // 我的ID
         var MY_ID = undefined;
         // 套接字
@@ -39,7 +41,7 @@
             //判断当前浏览器是否支持WebSocket
             if('WebSocket' in window) {
                 //改成你的地址
-                websocket = new WebSocket(wsUrl+MY_ID);
+                websocket = new WebSocket("ws://localhost:8080/api/websocket/"+MY_ID);
             } else {
                 alert('当前浏览器 Not support websocket')
             }
@@ -87,9 +89,13 @@
         function send() {
             var msgContent = document.getElementById('msgContent').value;
             if (msgContent==='') return;
-            document.getElementById('msgContent').value = '';
+            // 是否清空输入框
+            var isClearContent = document.getElementById('clearContent').checked;
+            if (isClearContent) document.getElementById('msgContent').value = '';
+
             var message = {};
-            message.friendId = document.getElementById('friendId').value;
+            message.type = "group";
+            message.groupId = document.getElementById('groupId').value;
             message.msg = msgContent;
             // websocket.send('{"msg":"' + msgContent + '"}');
             // 获取发送次数
@@ -97,11 +103,11 @@
             // 循环发送
             var startTime = Date.now();
             for (let i = 0; i < sendFrequency; i++) {
-                websocket.send(JSON.stringify(NewSingleShotMessage(message.friendId, message)));
+                websocket.send(JSON.stringify(NewMassShotMessage(message.groupId, message)));
                 setMessageInnerHTML(msgContent + "&#13;");
             }
             var endTime = Date.now();
-            alert(endTime)
+            console.log("发送消息总时长：", endTime - startTime);
         }
     </script>
 </html>
