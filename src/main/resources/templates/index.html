@@ -5,15 +5,63 @@
         <title>Java后端WebSocket的Tomcat测试</title>
         <script type="text/javascript" src="res_js/jquery-3.7.0.min.js"></script>
         <script type="text/javascript" src="res_js/message-plus.js"></script>
+        <script type="text/javascript" src="res_js/vue.global.js"></script>
+        <script type="text/javascript" src="res_js/axios-0.18.0.js"></script>
+        <style>
+            table {
+                border: 1px solid;
+                width: 200px;
+            }
+            table tr td {
+                border: 1px solid;
+            }
+        </style>
     </head>
     <body>
-        <div>
-            <div style="font-size: 30px; margin-top: 20px;">v0.0.5-beta</div>
-            <div style="font-size: 15px;">适用版本：v0.0.5-beta</div>
+        <div id="app">
+            <div>
+                <div style="font-size: 30px; margin-top: 20px;">v0.0.5-beta</div>
+                <div style="font-size: 15px;">适用版本：v0.0.51-beta</div>
+            </div>
+            <br>
+            <table>
+                <tr>
+                    <td colspan="2">在线人数：{{onLinePeopleNum}}</td>
+                </tr>
+                <tr>
+                    <td><a href="websocket-test" target="_blank">单发测试</a></td>
+                    <td><a href="group-test" target="_blank">群组测试</a></td>
+                </tr>
+            </table>
         </div>
-        <ul>
-            <li><a href="websocket-test" target="_blank">单发测试</a></li>
-            <li><a href="group-test" target="_blank">群组测试</a></li>
-        </ul>
     </body>
+    <script>
+        const App = {
+            mounted() {
+                setInterval(()=>{
+                    axios({
+                        method: "get",
+                        url: window.location.protocol+"//"+window.location.host+"/messageplus"
+                    }).then(resp=>{
+                        this.onLinePeopleNum = resp.data;
+                    }).catch(resp=>{
+                        this.$message({
+                            message: '查询失败！',
+                            type: 'warning'
+                        });
+                    });
+                }, 1000);
+            },
+            methods: {
+            },
+            data() {
+                return {
+                    // 在线人数
+                    onLinePeopleNum: 0,
+                };
+            }
+        };
+        const app = Vue.createApp(App);
+        app.mount("#app");
+    </script>
 </html>

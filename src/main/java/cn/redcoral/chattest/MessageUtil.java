@@ -6,7 +6,6 @@ import cn.redcoral.messageplus.port.MessagePlusBase;
 import cn.redcoral.messageplus.utils.MessagePlusUtils;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.*;
