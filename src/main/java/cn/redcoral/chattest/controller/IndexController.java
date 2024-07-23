@@ -1,5 +1,7 @@
 package cn.redcoral.chattest.controller;
 
+import cn.redcoral.messageplus.properties.MessagePersistenceProperties;
+import cn.redcoral.messageplus.properties.MessagePlusProperties;
 import cn.redcoral.messageplus.utils.MessagePlusUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,9 +18,12 @@ import java.util.List;
 @RequestMapping
 public class IndexController {
 
-
     @GetMapping("/")
     public String index(Model model) {
+        MessagePlusProperties mpp = new MessagePlusProperties();
+        MessagePersistenceProperties mppp = new MessagePersistenceProperties();
+        model.addAttribute("mpp", mpp);
+        model.addAttribute("mppp", mppp);
         return "index";
     }
 

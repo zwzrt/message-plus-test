@@ -30,4 +30,10 @@ spring:
 # 消息增强器配置
 messageplus:
   persistence: true # 开启持久化
-  service-id: 1001
+#  service-id: 1001
+  message:
+    expiration-time: 10 # 消息过期时间
+    concurrent-number: 1
+    message-persistence: true
+
+

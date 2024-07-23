@@ -1,16 +1,13 @@
 package cn.redcoral.chattest;
 
-import cn.redcoral.chattest.entity.FriendMsg;
-import cn.redcoral.chattest.entity.GroupMsg;
+import cn.hutool.http.server.HttpServerRequest;
+import cn.redcoral.messageplus.entity.MessageType;
 import cn.redcoral.messageplus.port.MessagePlusBase;
 import cn.redcoral.messageplus.utils.MessagePlusUtils;
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
-import java.util.List;
 
 /**
  * @author mo
@@ -19,90 +16,43 @@ import java.util.List;
  **/
 @Slf4j
 @Service
-@ServerEndpoint("/api/websocket/{sid}")
-public class MessageUtil extends MessagePlusBase {
+public class MessageUtil implements MessagePlusBase {
 
     @Override
-    public void onOpen(Session session,  String sid) {
+    public String onOpen(Session session, String sid) {
         System.out.println("连接成功");
+        return sid;
     }
 
     @Override
-    public void onClose() {
+    public void onClose(String sid) {
         System.out.println("断开连接");
     }
 
     @Override
-    public boolean onMessage(Object message, Session session) {
-//        String type= JSON.parseObject(message.toString()).get("type").toString();
-//        switch (type) {
-//            case "": return;
-//            case "friend": {
-//                System.out.println("单发");
-//                FriendMsg friendMsg1 = JSON.parseObject(message.toString(), FriendMsg.class);
-//            }
-//            case "group": {
-//                System.out.println("群发");
-//                GroupMsg groupMsg = JSON.parseObject(message.toString(), GroupMsg.class);
-//                // 群发
-//                ChatUtils.sendMessageToGroup(groupMsg.getGroupId(), groupMsg.getMsg());
-//            }
-//        }
-////        ChatUtils.sendMessage(friendMsg.getFriendId(), friendMsg.getMsg());
-////        ChatUtils.sendMessageToGroup();
-//        System.out.println(message);
-        return false;
-    }
-
-    @Override
-    public boolean onMessageBySingle(Object message, Session session) {
-//        System.out.println("单发");
-        FriendMsg friendMsg = JSON.parseObject(message.toString(), FriendMsg.class);
-        return MessagePlusUtils.sendMessage(friendMsg.getFriendId(), friendMsg.getMsg());
-    }
-
-    @Override
-    public List<String> onMessageByMass(Object message, Session session) {
-//        System.out.println("群发");
-        GroupMsg groupMsg = JSON.parseObject(message.toString(), GroupMsg.class);
-        // 群发
-        return MessagePlusUtils.sendMessageToGroupBarringMe(this.client_id, groupMsg.getGroupId(), groupMsg.getMsg());
-    }
-
-    @Override
-    public boolean onMessageBySystem(Object message, Session session) {
+    public boolean onMessageCheck(HttpServerRequest request, String senderId, MessageType mt) {
         return true;
     }
 
-    /**
-     * 收到收件箱的单发消息
-     */
     @Override
-    public void onMessageByInboxAndSingle(Object message, Session session) {
-        FriendMsg friendMsg = JSON.parseObject(message.toString(), FriendMsg.class);
-        MessagePlusUtils.sendMessage(client_id, friendMsg.getMsg());
-    }
-    /**
-     * 收到收件箱的群发消息
-     */
-    @Override
-    public void onMessageByInboxAndByMass(Object message, Session session) {
-        GroupMsg groupMsg = JSON.parseObject(message.toString(), GroupMsg.class);
-        MessagePlusUtils.sendMessage(client_id, groupMsg.getMsg());
-    }
-    /**
-     * 收到收件箱的系统消息
-     */
-    @Override
-    public void onMessageByInboxAndSystem(Object message, Session session) {
+    public void onMessageBySystem(String senderId, Object message) {
 
+    }
+
+    @Override
+    public boolean onMessageByInboxAndSingle(String senderId, String receiverId, Object message) {
+        return MessagePlusUtils.sendMessage(receiverId, message.toString());
+    }
+
+    @Override
+    public boolean onMessageByInboxAndByMass(String senderId, String groupId, String receiverId, Object message) {
+        if (senderId.equals(receiverId)) return true;
+        return MessagePlusUtils.sendMessage(receiverId, message.toString());
     }
 
     @Override
     public void onError(Session session, Throwable error) {
         System.out.println("连接错误");
-//        ChatUtils chatUtils = ChatTestApplication.context.getBean(ChatUtils.class);
-//        System.out.println(chatUtils);
         error.printStackTrace();
     }
 }

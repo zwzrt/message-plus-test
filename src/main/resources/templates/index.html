@@ -4,13 +4,13 @@
         <meta charset="utf-8">
         <title>Java后端WebSocket的Tomcat测试</title>
         <script type="text/javascript" src="res_js/jquery-3.7.0.min.js"></script>
-        <script type="text/javascript" src="res_js/message-plus.js"></script>
+        <script type="text/javascript" src="res_js/message-plus1.js"></script>
         <script type="text/javascript" src="res_js/vue.global.js"></script>
         <script type="text/javascript" src="res_js/axios-0.18.0.js"></script>
         <style>
             table {
                 border: 1px solid;
-                width: 200px;
+                min-width: 200px;
             }
             table tr td {
                 border: 1px solid;
@@ -20,13 +20,29 @@
     <body>
         <div id="app">
             <div>
-                <div style="font-size: 30px; margin-top: 20px;">v0.0.5-beta</div>
-                <div style="font-size: 15px;">适用版本：v0.0.51-beta</div>
+                <div style="font-size: 30px; margin-top: 20px;">v0.0.62-beta</div>
+                <div style="font-size: 15px;">适用版本：v0.0.62-beta</div>
             </div>
             <br>
             <table>
                 <tr>
                     <td colspan="2">在线人数：{{onLinePeopleNum}}</td>
+                    <td rowspan="2" style="width: 450px; background-color: rgba(120,120,120,1); color: rgba(240,240,240,1); padding: 10px;">
+                        配置内容：<br>
+                        <ol style="list-style-type: none; padding: 0">
+                            <li>messageplus:</li>
+                            <ol style="list-style-type: none;">
+                                <li th:text="'persistence: '+${mpp.persistence}"></li>
+                                <li th:text="'service-id: '+${mpp.serviceId}"></li>
+                                <li>message:</li>
+                                <ol style="list-style-type: none;">
+                                    <li th:text="'expiration-time: '+${mppp.expirationTime}"></li>
+                                    <li th:text="'concurrent-number: '+${mppp.concurrentNumber}"></li>
+                                    <li th:text="'message-persistence: '+${mppp.messagePersistence}"></li>
+                                </ol>
+                            </ol>
+                        </ol>
+                    </td>
                 </tr>
                 <tr>
                     <td><a href="websocket-test" target="_blank">单发测试</a></td>

@@ -3,13 +3,13 @@
     <head>
         <meta charset="utf-8">
         <title>Java后端WebSocket的Tomcat测试</title>
-        <script type="text/javascript" src="res_js/jquery-3.7.0.min.js"></script>
-        <script type="text/javascript" src="res_js/message-plus.js"></script>
+<!--        <script type="text/javascript" src="res_js/jquery-3.7.0.min.js"></script>-->
+<!--        <script type="text/javascript" src="res_js/message-plus1.js"></script>-->
         <script type="text/javascript" src="res_js/vue.global.js"></script>
         <style>
             .addNew {
                 width: 455px;
-                height: 323px;
+                height: 348px;
                 border: 1px black solid;
                 margin: 0;
                 float: left;
@@ -33,7 +33,7 @@
                         <font>第{{id}}号</font>
                         <button @click="deleteById(id)" style="float: right">删除</button>
                     </div>
-                    <iframe src="http://localhost:8081/websocket" style="width: 457px; height: 302px; border: 0;"></iframe>
+                    <iframe src="http://localhost:8081/websocket" style="width: 457px; height: 333px; border: 0;"></iframe>
                 </div>
             </div>
             <div class="addNew" @click="addNew">

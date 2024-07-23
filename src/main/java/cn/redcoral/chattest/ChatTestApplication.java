@@ -1,6 +1,7 @@
 package cn.redcoral.chattest;
 
 import cn.redcoral.messageplus.entity.Group;
+import cn.redcoral.messageplus.properties.MessagePersistenceProperties;
 import cn.redcoral.messageplus.properties.MessagePlusProperties;
 import cn.redcoral.messageplus.utils.MessagePlusUtils;
 import cn.redcoral.messageplus.EnableMessagePlus;
@@ -32,14 +33,11 @@ public class ChatTestApplication {
         Group group = MessagePlusUtils.createGroup("001", "相亲相爱一家人", Arrays.asList("002", "003"));
         groupId = group.getId();
         log.info("群组ID：{}", groupId);
-
         log.info("初始化完成...");
-
-        log.info("访问地址：http://localhost:8080/");
-
-        System.out.println(MessagePlusProperties.serviceId);
-        System.out.println(MessagePlusProperties.persistence);
-        System.out.println(MessagePlusProperties.messagePersistence);
+        log.info("访问地址：http://localhost:8081/");
+        log.info("服务ID：{}", MessagePlusProperties.serviceId);
+        log.info("是否开启持久化：{}", MessagePlusProperties.persistence);
+        log.info("是否开启消息持久化：{}", MessagePersistenceProperties.messagePersistence);
     }
 
 }

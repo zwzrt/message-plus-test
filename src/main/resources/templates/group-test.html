@@ -4,13 +4,14 @@
         <meta charset="utf-8">
         <title>Java后端WebSocket的群聊测试</title>
         <script type="text/javascript" src="res_js/jquery-3.7.0.min.js"></script>
-        <script type="text/javascript" src="res_js/message-plus.js"></script>
+        <script type="text/javascript" src="res_js/axios-0.18.0.js"></script>
     </head>
     <body>
         <div><a href="/">&lt;&lt;返回</a></div>
         <hr>
         <div>
             输入ID：<input id="my_id" type="text">
+            端口：<input id="port" type="text" value="8081">
             <button id="joinBtn" onclick="join()">立即连接</button>
             <button onclick="closeWebSocket()">关闭WebSocket连接</button>
         </div>
@@ -18,30 +19,38 @@
         <div>
             群组ID：<input id="groupId" type="text">
             发送次数：<input id="sendFrequency" type="number" name="quantity" min="1" max="100" value="1">
+            发送频率：<input id="sendTime" type="number" name="quantity" min="1" max="1000" value="1">ms
         </div>
         <div>
             是否清空内容：<input id="clearContent" type="checkbox" checked>
             内容：<input id="msgContent" type="text">
-            <button onclick="send()">发送消息</button>
+            <button id="sendMessage" onclick="send()">发送消息</button>
         </div>
         <hr>
         <div id="message"></div>
     </body>
     <script type="text/javascript">
+        const wsUrl = "ws://localhost:8081/messageplus/ws/";
+        function getWsUrl(port) {
+            return "ws://localhost:"+port+"/messageplus/ws/"
+        }
         // 我的ID
         var MY_ID = undefined;
+        // 服务器端口
+        var PORT = undefined;
         // 套接字
         var websocket = null;
         // 连接服务器
         function join() {
             MY_ID = document.getElementById('my_id').value;
             if (MY_ID===undefined) return;
+            PORT = document.getElementById('port').value;
             document.getElementById('joinBtn').disabled = true;
             document.getElementById('message').innerHTML = '';
             //判断当前浏览器是否支持WebSocket
             if('WebSocket' in window) {
                 //改成你的地址
-                websocket = new WebSocket("ws://localhost:8080/api/websocket/"+MY_ID);
+                websocket = new WebSocket(getWsUrl(PORT)+MY_ID);
             } else {
                 alert('当前浏览器 Not support websocket')
             }
@@ -87,6 +96,8 @@
 
         //发送消息
         function send() {
+            document.getElementById('sendMessage').disabled = true;
+            // 获取消息内容
             var msgContent = document.getElementById('msgContent').value;
             if (msgContent==='') return;
             // 是否清空输入框
@@ -97,17 +108,34 @@
             message.type = "group";
             message.groupId = document.getElementById('groupId').value;
             message.msg = msgContent;
-            // websocket.send('{"msg":"' + msgContent + '"}');
             // 获取发送次数
             var sendFrequency = document.getElementById('sendFrequency').value;
+            // 获取发送频率
+            var sendTime = document.getElementById('sendTime').value;
             // 循环发送
-            var startTime = Date.now();
-            for (let i = 0; i < sendFrequency; i++) {
-                websocket.send(JSON.stringify(NewMassShotMessage(message.groupId, message)));
-                setMessageInnerHTML(msgContent + "&#13;");
+            let i = 0;
+            sm();
+            function sm() {
+                setTimeout(()=>{
+                    axios({
+                        method: "post",
+                        url: window.location.protocol + "//" + window.location.host + "/messageplus/send/mass",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8'
+                        },
+                        params: {
+                            id1: MY_ID,
+                            id2: message.groupId,
+                        },
+                        data: msgContent
+                    }).then(resp => {}).catch(err => {});
+                    i++;
+                    if (i<sendFrequency) sm();
+                    else {
+                        document.getElementById('sendMessage').disabled = false;
+                    }
+                },sendTime);
             }
-            var endTime = Date.now();
-            console.log("发送消息总时长：", endTime - startTime);
         }
     </script>
 </html>
