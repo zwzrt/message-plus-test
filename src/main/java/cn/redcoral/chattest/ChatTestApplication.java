@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 @Slf4j
 @SpringBootApplication
-@EnableMessagePlus // 开启message增强
+@EnableMessagePlus() // 开启message增强
 public class ChatTestApplication {
 
     public static ApplicationContext context;

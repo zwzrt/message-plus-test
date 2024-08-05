@@ -1,18 +1,16 @@
 package cn.redcoral.chattest;
 
 import cn.hutool.http.server.HttpServerRequest;
-import cn.redcoral.messageplus.entity.MessageType;
+import cn.redcoral.messageplus.entity.Message;
 import cn.redcoral.messageplus.port.MessagePlusBase;
-import cn.redcoral.messageplus.utils.MessagePlusUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.websocket.*;
+import javax.websocket.Session;
+
 
 /**
  * @author mo
- * @Description:
- * @日期: 2024-05-25 14:21
  **/
 @Slf4j
 @Service
@@ -30,29 +28,16 @@ public class MessageUtil implements MessagePlusBase {
     }
 
     @Override
-    public boolean onMessageCheck(HttpServerRequest request, String senderId, MessageType mt) {
+    public boolean onMessageCheck(HttpServerRequest request, Message message) throws Exception {
         return true;
     }
 
     @Override
-    public void onMessageBySystem(String senderId, Object message) {
+    public void onFailedMessage(Message message) {
 
     }
 
     @Override
-    public boolean onMessageByInboxAndSingle(String senderId, String receiverId, Object message) {
-        return MessagePlusUtils.sendMessage(receiverId, message.toString());
-    }
-
-    @Override
-    public boolean onMessageByInboxAndByMass(String senderId, String groupId, String receiverId, Object message) {
-        if (senderId.equals(receiverId)) return true;
-        return MessagePlusUtils.sendMessage(receiverId, message.toString());
-    }
-
-    @Override
-    public void onError(Session session, Throwable error) {
-        System.out.println("连接错误");
-        error.printStackTrace();
+    public void onMessageBySystem(String senderId, String message) {
     }
 }
