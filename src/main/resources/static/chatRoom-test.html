@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>Java后端WebSocket的Tomcat测试</title>
+    <script type="text/javascript" src="/res_js/axios-0.18.0.js"></script>
+    <script type="text/javascript" src="/res_js/vue.global.js"></script>
+    <script th:src="@{res_js/sockjs.min.js}"></script>
+    <script th:src="@{res_js/stomp.min.js}"></script>
+    <style>
+        .addNew {
+            width: 455px;
+            height: 348px;
+            border: 1px black solid;
+            margin: 0;
+            float: left;
+            line-height: 300px;
+            text-align: center;
+            user-select: none;
+        }
+        .addNew:hover {
+            background-color: rgba(180,180,180,1);
+        }
+        .addNew:active {
+            background-color: rgba(130,130,130,1);
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div style="position: fixed; top: 5px; left: 5px; width: 400px;">
+        <div style="width: 450px">
+            端口：<input id="port" type="text" value="8081">
+            <button id="joinBtn" @click="join()">开启聊天室</button>
+            <button @click="closeWebSocket()">关闭聊天室</button>
+        </div>
+        <hr>
+        <div>
+            发送次数：<input id="sendFrequency" type="number" name="quantity" min="1" max="100" value="1">
+            发送频率：<input id="sendTime" type="number" name="quantity" min="1" max="1000" value="1">ms
+        </div>
+        <div>
+            是否清空内容：<input id="clearContent" type="checkbox" checked>
+            内容：<input id="msgContent" type="text" style="width: 162px; height: 15px">
+            <button id="sendMessage" @click="send()">发送</button>
+        </div>
+        <hr style="margin-bottom: 0">
+        <div id="message" style="height: 700px; overflow: auto"></div>
+    </div>
+    <div style="margin-left: 410px; border-left: 1px black solid; height: 800px; overflow: auto; padding-left: 10px;">
+        <iframe :id="getId(id)" v-for="id in ids" :src="'http://localhost:8081/chatRoom.html?id='+getId(id)" style="width: 400px; height: 300px; border: 0;"></iframe>
+    </div>
+</div>
+<script>
+    const App = {
+        mounted() {
+        },
+        methods: {
+            // 获取ID
+            getId(id) {
+                return id;
+            },
+            getWsUrl(port) {
+                return "ws://localhost:"+port+"/messageplus/ws/"
+            },
+            // 连接服务器
+            join() {
+                // 创建聊天室
+                axios({
+                    method: "post",
+                    url: window.location.protocol + "//" + window.location.host + "/messageplus/chatroom/create",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8'
+                    },
+                    params: {
+                        createId: this.MY_ID,
+                        chatRoomName: "全球直播",
+                    }
+                }).then(resp => {}).catch(err => {});
+                this.PORT = document.getElementById('port').value;
+                document.getElementById('joinBtn').disabled = true;
+                document.getElementById('message').innerHTML = '';
+
+                var socket = new SockJS('/ws');
+                // 使用 STOMP 子协议的 WebSocket 客户端
+                this.stompClient = Stomp.over(socket);
+                this.stompClient.connect({}, (frame) => {
+                    this.stompClient.subscribe('/topic/chat/'+this.chatroomId, (response) => {
+                        this.setMessageInnerHTML(response.body)
+                    });
+                });
+            },
+            //将消息显示在网页上
+            innerHTML(innerHTML) {
+                document.getElementById('message').innerHTML += innerHTML + '<br/>';
+            },
+            //将消息显示在网页上
+            setMessageInnerHTML(innerHTML) {
+                const msg = JSON.parse(innerHTML);
+                switch (msg.type) {
+                    case "SINGLE_SHOT": {
+                        document.getElementById('message').innerHTML += msg.senderId+': &ensp;'+msg.data + '<br/>';
+                        break;
+                    }
+                    case "CHAT_ROOM_SHOT": {
+                        document.getElementById('message').innerHTML += msg.senderId+': &ensp;'+msg.data + '<br/>';
+                        break;
+                    }
+                }
+            },
+            //关闭WebSocket连接
+            closeWebSocket() {
+                // 断开连接
+                if (this.stompClient != null) {
+                    this.stompClient.disconnect();
+                }
+                document.getElementById('joinBtn').disabled = false;
+            },
+            sm(i, sendFrequency, sendTime) {
+                setTimeout(()=>{
+                    axios({
+                        method: "post",
+                        url: window.location.protocol + "//" + window.location.host + "/messageplus/send/chatroom",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8'
+                        },
+                        params: {
+                            id1: this.MY_ID,
+                            id2: this.chatroomId,
+                        },
+                        data: msgContent
+                    }).then(resp => {}).catch(err => {});
+                    i++;
+                    if (i<sendFrequency) this.sm(i, sendFrequency, sendTime);
+                },sendTime);
+            },
+            //发送消息
+            send() {
+                // 获取消息内容
+                var msgContent = document.getElementById('msgContent').value;
+                if (msgContent==='') return;
+
+                document.getElementById('sendMessage').disabled = true;
+
+                // 是否清空输入框
+                var isClearContent = document.getElementById('clearContent').checked;
+                if (isClearContent) document.getElementById('msgContent').value = '';
+
+                // 获取发送次数
+                var sendFrequency = document.getElementById('sendFrequency').value;
+                // 获取发送频率
+                var sendTime = document.getElementById('sendTime').value;
+                // 循环发送
+                this.sm(0, sendFrequency, sendTime);
+                setTimeout(()=>{
+                    document.getElementById('sendMessage').disabled = false;
+                },sendFrequency*sendTime);
+            }
+        },
+        data() {
+            return {
+                ids: [2, 3, 4, 5, 6, 7, 8, 9, 10],
+                showIds: [true],
+                wsUrl: "ws://localhost:8081/messageplus/ws/",
+                // 我的ID
+                MY_ID: "1",
+                // 服务器端口
+                PORT: undefined,
+                // 套接字
+                stompClient: null,
+                chatroomId: "05a78901-87a8-439a-b7f9-668cf13a7a39",
+            }
+        }
+    };
+    const app = Vue.createApp(App);
+    app.mount("#app");
+</script>
+</body>
+</html>
