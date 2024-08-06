@@ -1,9 +1,9 @@
 package cn.redcoral.chattest;
 
-import cn.redcoral.messageplus.entity.Group;
+import cn.redcoral.messageplus.data.entity.Group;
 import cn.redcoral.messageplus.properties.MessagePersistenceProperties;
 import cn.redcoral.messageplus.properties.MessagePlusProperties;
-import cn.redcoral.messageplus.utils.MessagePlusUtils;
+import cn.redcoral.messageplus.manage.MessagePlusUtils;
 import cn.redcoral.messageplus.EnableMessagePlus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -36,8 +36,8 @@ public class ChatTestApplication {
         log.info("初始化完成...");
         log.info("访问地址：http://localhost:8081/");
         log.info("服务ID：{}", MessagePlusProperties.serviceId);
-        log.info("是否开启持久化：{}", MessagePlusProperties.persistence);
         log.info("是否开启消息持久化：{}", MessagePersistenceProperties.messagePersistence);
+
     }
 
 }

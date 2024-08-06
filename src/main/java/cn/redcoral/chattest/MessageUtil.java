@@ -1,7 +1,7 @@
 package cn.redcoral.chattest;
 
 import cn.hutool.http.server.HttpServerRequest;
-import cn.redcoral.messageplus.entity.Message;
+import cn.redcoral.messageplus.data.entity.message.Message;
 import cn.redcoral.messageplus.port.MessagePlusBase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
