@@ -34,7 +34,7 @@ public class ChatTestApplication {
         groupId = group.getId();
         log.info("群组ID：{}", groupId);
         log.info("初始化完成...");
-        log.info("访问地址：http://localhost:8081/");
+        log.info("测试地址：http://localhost:8081/");
         log.info("服务ID：{}", MessagePlusProperties.serviceId);
         log.info("是否开启消息持久化：{}", MessagePersistenceProperties.messagePersistence);
 

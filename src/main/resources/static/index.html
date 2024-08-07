@@ -7,6 +7,7 @@
         <script type="text/javascript" src="/res_js/message-plus1.js"></script>
         <script type="text/javascript" src="/res_js/vue.global.js"></script>
         <script type="text/javascript" src="/res_js/axios-0.18.0.js"></script>
+        <link rel="stylesheet" href="/index.css">
         <style>
             table {
                 border: 1px solid;
@@ -17,11 +18,15 @@
             }
         </style>
     </head>
-    <body>
-        <div id="app">
-            <div>
-                <div style="font-size: 30px; margin-top: 20px;">v0.0.62-beta</div>
-                <div style="font-size: 15px;">适用版本：v0.0.6-beta及后续版本</div>
+    <body style="margin: 0; padding: 0">
+        <div id="app" style="margin: 0; padding: 0">
+            <div class="title-back"></div>
+            <div class="title">
+                <div class="tag-h" style="font-size: 22px;">单机版v0.1.2-beta</div>
+                <div class="tag" style="float: right;" @click="open('https://zwzrt.github.io/')">&ensp;访问官网&ensp;</div>
+            </div>
+            <div style="margin-top: 20px">
+                <div style="font-size: 15px;">适用版本：v0.1.2-beta及后续版本</div>
             </div>
             <br>
             <table>
@@ -72,6 +77,9 @@
                 }, 1000);
             },
             methods: {
+                open(url) {
+                    window.open(url);
+                }
             },
             data() {
                 return {
