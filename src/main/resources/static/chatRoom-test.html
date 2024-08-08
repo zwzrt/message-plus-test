@@ -61,7 +61,7 @@
                 return id;
             },
             getWsUrl(port) {
-                return "ws://localhost:"+port+"/messageplus/ws/"
+                return "ws://localhost:"+port+"/messageplus/ws/";
             },
             // 连接服务器
             join() {
@@ -76,7 +76,10 @@
                         createId: this.MY_ID,
                         chatRoomName: "全球直播",
                     }
-                }).then(resp => {}).catch(err => {});
+                }).then(resp => {
+                    this.innerHTML('聊天室ID：'+resp.data.id);
+                    this.chatroomId = resp.data.id;
+                }).catch(err => {});
                 this.PORT = document.getElementById('port').value;
                 document.getElementById('joinBtn').disabled = true;
                 document.getElementById('message').innerHTML = '';
@@ -168,7 +171,7 @@
                 PORT: undefined,
                 // 套接字
                 stompClient: null,
-                chatroomId: "05a78901-87a8-439a-b7f9-668cf13a7a39",
+                chatroomId: null,
             }
         }
     };

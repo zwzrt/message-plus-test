@@ -12,8 +12,9 @@
 <body style="width: 385px; height: 290px; border: 1px black solid; margin: 0">
 <div style="width: 385px">
     端口：<input id="port" type="text" value="8081" style="width: 40px;">
-    <button id="joinBtn" onclick="join()">加入聊天室</button>
-    <button onclick="closeWebSocket()">关闭连接</button>
+    房间ID：<input id="chatRoomId" type="text" style="width: 90px;">
+    <button id="joinBtn" onclick="join()">加入</button>
+    <button onclick="closeWebSocket()">退出</button>
 </div>
 <hr>
 <div>
@@ -59,10 +60,11 @@
     // 服务器端口
     var PORT = undefined;
     // 聊天室ID
-    var chatroomId = "05a78901-87a8-439a-b7f9-668cf13a7a39";
+    var chatroomId = undefined;
     var stompClient = null;
     // 连接服务器
     function join() {
+        chatroomId = document.getElementById('chatRoomId').value;
         // 加入聊天室
         axios({
             method: "post",
