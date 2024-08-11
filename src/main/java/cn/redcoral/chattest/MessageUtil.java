@@ -33,11 +33,6 @@ public class MessageUtil implements MessagePlusBase {
     }
 
     @Override
-    public void onFailedMessage(Message message) {
-
-    }
-
-    @Override
     public void onMessageBySystem(String senderId, String message) {
     }
 }

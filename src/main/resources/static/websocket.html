@@ -85,6 +85,8 @@
         //将消息显示在网页上
         function innerHTML(innerHTML) {
             document.getElementById('message').innerHTML += innerHTML + '<br/>';
+            // 滚动条自动到底
+            document.getElementById('message').scrollTop = document.getElementById('message').scrollHeight;
         }
         //将消息显示在网页上
         function setMessageInnerHTML(innerHTML) {
@@ -94,7 +96,13 @@
                     document.getElementById('message').innerHTML += msg.senderId+': &ensp;'+msg.data + '<br/>';
                     break;
                 }
+                case "MASS_SHOT": {
+                    document.getElementById('message').innerHTML += "来自群组("+msg.groupId+")：" + msg.senderId + '的消息：<br/>';
+                    document.getElementById('message').innerHTML += msg.data + '<br/>';
+                    break;
+                }
             }
+            document.getElementById('message').scrollTop = document.getElementById('message').scrollHeight;
         }
 
         //关闭WebSocket连接
