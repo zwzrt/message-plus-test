@@ -85,7 +85,7 @@
         // 使用 STOMP 子协议的 WebSocket 客户端
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function(frame) {
-            stompClient.subscribe('/topic/chat/'+chatroomId, function(response){
+            stompClient.subscribe('/messageplus/chatroom/'+chatroomId, function(response){
                 setMessageInnerHTML(response.body)
             });
         });
@@ -94,6 +94,8 @@
     //将消息显示在网页上
     function innerHTML(innerHTML) {
         document.getElementById('message').innerHTML += innerHTML + '<br/>';
+        // 滚动条自动到底
+        document.getElementById('message').scrollTop = document.getElementById('message').scrollHeight;
     }
     //将消息显示在网页上
     function setMessageInnerHTML(innerHTML) {
@@ -108,6 +110,8 @@
                 break;
             }
         }
+        // 滚动条自动到底
+        document.getElementById('message').scrollTop = document.getElementById('message').scrollHeight;
     }
 
     //关闭WebSocket连接

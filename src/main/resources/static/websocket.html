@@ -116,7 +116,10 @@
             document.getElementById('sendMessage').disabled = true;
             // 获取消息内容
             var msgContent = document.getElementById('msgContent').value;
-            if (msgContent==='') return;
+            if (msgContent==='') {
+                document.getElementById('sendMessage').disabled = false;
+                return;
+            }
             // 是否清空输入框
             var isClearContent = document.getElementById('clearContent').checked;
             if (isClearContent) document.getElementById('msgContent').value = '';
