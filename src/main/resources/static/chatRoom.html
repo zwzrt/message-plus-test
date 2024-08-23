@@ -18,8 +18,9 @@
 </div>
 <hr>
 <div>
-    发送次数：<input id="sendFrequency" type="number" name="quantity" min="1" max="100" value="1">
-    发送频率：<input id="sendTime" type="number" name="quantity" min="1" max="1000" value="1">ms
+    发送次数：<input id="sendFrequency" type="number" name="quantity" min="1" max="100" value="1" style="width: 40px">
+    发送频率：<input id="sendTime" type="number" name="quantity" min="1" max="1000" value="1" style="width: 40px">ms
+    <button onclick="thumbsUpNum()">点赞</button>
 </div>
 <div>
     是否清空内容:<input id="clearContent" type="checkbox" checked>
@@ -163,6 +164,24 @@
         setTimeout(()=>{
             document.getElementById('sendMessage').disabled = false;
         },sendFrequency*sendTime);
+    }
+
+    // 点赞
+    function thumbsUpNum() {
+        axios({
+            method: "post",
+            url: window.location.protocol + "//" + window.location.host + "/messageplus/chatroom/thumbsUpNum",
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            params: {
+                id1: MY_ID,
+                id2: chatroomId,
+            }
+        }).then(resp => {
+            innerHTML("点赞成功！");
+        }).catch(err => {
+        });
     }
 </script>
 </html>
