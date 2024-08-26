@@ -117,11 +117,24 @@
 
     //关闭WebSocket连接
     function closeWebSocket() {
-        // 断开连接
-        if (stompClient != null) {
-            stompClient.disconnect();
-        }
-        document.getElementById('joinBtn').disabled = false;
+        axios({
+            method: "delete",
+            url: window.location.protocol + "//" + window.location.host + "/messageplus/chatroom/quit",
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            params: {
+                id1: MY_ID,
+                id2: chatroomId,
+            }
+        }).then(resp => {
+            // 断开连接
+            if (stompClient != null) {
+                stompClient.disconnect();
+            }
+            document.getElementById('joinBtn').disabled = false;
+        }).catch(err => {
+        });
     }
 
     //发送消息
