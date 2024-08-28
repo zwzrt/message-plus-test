@@ -133,7 +133,7 @@
             // 获取发送频率
             var sendTime = document.getElementById('sendTime').value;
             // 循环发送
-            let i = 0;
+            let i = 1;
             sm();
             function sm() {
                 setTimeout(()=>{
@@ -149,11 +149,11 @@
                         },
                         data: msgContent
                     }).then(resp => {}).catch(err => {});
-                    i++;
                     if (i<sendFrequency) sm();
                     else {
                         document.getElementById('sendMessage').disabled = false;
                     }
+                    i++;
                 },sendTime);
             }
             // for (let i = 0; i < sendFrequency; i++) {
