@@ -28,7 +28,14 @@
 </head>
 <body>
 <div id="app">
-    <div style="position: fixed; top: 5px; left: 5px; width: 400px;">
+    <div style="height: 85px; float: left; width: 400px; border: 1px solid black;">
+        <div style="writing-mode: vertical-rl; text-orientation: upright; height: 80px; float: left; font-size: 13px; background-color: black; color: white">未关闭聊天室</div>
+        <div v-for="chatroom in noCloseChatRoomList">
+            <div>ID：{{chatroom.id}}</div>
+            <div>名称：{{chatroom.name}}</div>
+        </div>
+    </div>
+    <div style="position: fixed; top: 100px; left: 5px; width: 400px;">
         <div style="width: 450px">
             端口：<input id="port" type="text" value="8081">
             <button id="joinBtn" @click="join()">开启聊天室</button>
@@ -54,6 +61,18 @@
 <script>
     const App = {
         mounted() {
+            axios({
+                method: "get",
+                url: window.location.protocol + "//" + window.location.host + "/messageplus/chatroom/noclose",
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                },
+                params: {
+                    id: this.MY_ID
+                }
+            }).then(resp => {
+                this.noCloseChatRoomList = resp.data;
+            }).catch(err => {});
         },
         methods: {
             // 获取ID
@@ -151,7 +170,7 @@
                 setTimeout(()=>{
                     axios({
                         method: "post",
-                        url: window.location.protocol + "//" + window.location.host + "/messageplus/send/chatroom",
+                        url: window.location.protocol + "//" + window.location.host + "/messageplus/chatroom/send",
                         headers: {
                             'Content-Type': 'application/json;charset=UTF-8'
                         },
@@ -200,6 +219,7 @@
                 // 套接字
                 stompClient: null,
                 chatroomId: null,
+                noCloseChatRoomList: []
             }
         }
     };

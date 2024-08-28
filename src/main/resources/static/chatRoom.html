@@ -66,6 +66,11 @@
     // 连接服务器
     function join() {
         chatroomId = document.getElementById('chatRoomId').value;
+
+        PORT = document.getElementById('port').value;
+        document.getElementById('joinBtn').disabled = true;
+        document.getElementById('message').innerHTML = '';
+
         // 加入聊天室
         axios({
             method: "post",
@@ -77,10 +82,23 @@
                 id1: MY_ID,
                 id2: chatroomId,
             }
-        }).then(resp => {}).catch(err => {});
-        PORT = document.getElementById('port').value;
-        document.getElementById('joinBtn').disabled = true;
-        document.getElementById('message').innerHTML = '';
+        }).then(resp => {
+            // 查询历史消息
+            axios({
+                method: "get",
+                url: window.location.protocol + "//" + window.location.host + "/messageplus/chatroom/history/message",
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                },
+                params: {
+                    id: chatroomId,
+                }
+            }).then(resp1 => {
+                for(i in resp1.data) {
+                    addMessageInnerHTML(resp1.data[i]);
+                }
+            }).catch(err => {});
+        }).catch(err => {});
 
         var socket = new SockJS('/ws');
         // 使用 STOMP 子协议的 WebSocket 客户端
@@ -101,13 +119,17 @@
     //将消息显示在网页上
     function setMessageInnerHTML(innerHTML) {
         const msg = JSON.parse(innerHTML);
+        addMessageInnerHTML(msg);
+    }
+    //将消息显示在网页上
+    function addMessageInnerHTML(msg) {
         switch (msg.type) {
             case "SINGLE_SHOT": {
-                document.getElementById('message').innerHTML += msg.senderId+': &ensp;'+msg.data + '<br/>';
+                document.getElementById('message').innerHTML += msg.senderId+':&ensp;'+msg.data + '<br/>';
                 break;
             }
             case "CHAT_ROOM_SHOT": {
-                document.getElementById('message').innerHTML += msg.senderId+': &ensp;'+msg.data + '<br/>';
+                document.getElementById('message').innerHTML += msg.senderId+':&ensp;'+msg.data + '<br/>';
                 break;
             }
         }
@@ -160,7 +182,7 @@
             setTimeout(()=>{
                 axios({
                     method: "post",
-                    url: window.location.protocol + "//" + window.location.host + "/messageplus/send/chatroom",
+                    url: window.location.protocol + "//" + window.location.host + "/messageplus/chatroom/send",
                     headers: {
                         'Content-Type': 'application/json;charset=UTF-8'
                     },

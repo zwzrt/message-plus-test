@@ -24,5 +24,8 @@ messageplus:
     expiration-time: 10 # 消息过期时间
     concurrent-number: 1
     message-persistence: true
+  chatroom:
+    survival-time: 100
+    message-max-size: 10
 
 
