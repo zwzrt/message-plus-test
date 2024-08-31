@@ -50,7 +50,7 @@
             //判断当前浏览器是否支持WebSocket
             if('WebSocket' in window) {
                 //改成你的地址
-                websocket = new WebSocket(getWsUrl(PORT)+MY_ID);
+                websocket = new WebSocket(getWsUrl(PORT)+MY_ID+"/1");
             } else {
                 alert('当前浏览器 Not support websocket')
             }
