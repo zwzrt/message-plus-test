@@ -28,11 +28,13 @@ public class MessageUtil implements MessagePlusBase {
     }
 
     @Override
-    public boolean onMessageCheck(HttpServerRequest request, Message message) throws Exception {
-        return true;
+    public void onMessageBySystem(String senderId, String message) {
     }
 
     @Override
-    public void onMessageBySystem(String senderId, String message) {
+    public String login(String username, String password) {
+        if ("123456".equals(username) && "123456".equals(password)) {
+            return "123456";
+        } else return null;
     }
 }

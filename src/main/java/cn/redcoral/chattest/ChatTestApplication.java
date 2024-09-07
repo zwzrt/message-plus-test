@@ -41,6 +41,9 @@ public class ChatTestApplication {
         AsyncTest asyncTest = context.getBean(AsyncTest.class);
         asyncTest.asyncTest();
 
+        Interf bean = context.getBean(Interf.class);
+        bean.sout();
+
     }
 
 }

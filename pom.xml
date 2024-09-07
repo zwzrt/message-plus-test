@@ -37,7 +37,7 @@
         <dependency>
             <groupId>io.github.zwzrt</groupId>
             <artifactId>message-plus</artifactId>
-            <version>0.2.1-beta</version>
+            <version>0.2.2-beta</version>
         </dependency>
 
         <dependency>
